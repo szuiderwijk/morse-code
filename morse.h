@@ -49,6 +49,7 @@ static MorseMap const map_table[] PROGMEM = {
 static const int MORSE_TABLE_LENGTH = 26;
 
 std::string decodeMorseCharacter(std::string sequence);
+std::string encodeMorseCharacter(const char& character);
 
 
 #endif /* MORSE_CPP_ */

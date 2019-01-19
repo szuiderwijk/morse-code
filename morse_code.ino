@@ -65,7 +65,25 @@ char handleHigh() {
 	digitalWrite(buzzerPin, LOW);
 	delay(BUTTON_DELAY);
 	return '.';
+}
 
+void playMorseChar(const std::string morseChar) {
+	for (uint8_t i = 0; i < morseChar; i++) {
+		const char sChar = morseChar.at(i);
+		if (sChar == '-') {
+			buzzer.singleTone(4000, 500);
+		} else {
+			buzzer.singleTone(4000, 100);
+		}
+		delay(1000);
+	}
+}
+
+void playMorseString(const std::string aString) {
+	for (uint8_t i = 0; i < aString.size(); i++) {
+		std::string morseSequence = encodeMorseCharacter(aString.at(i));
+		playMorseChar(morseSequence);
+	}
 }
 
 bool isInCities(const std::string value) {
@@ -208,7 +226,6 @@ void loop() {
 						}
 					}
 				}
-
 			}
 			delay(10);
 		}
