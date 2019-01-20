@@ -1,6 +1,7 @@
 #include "morse.h"
 #include <ArduinoSTL.h>
 #include "progmem.h"
+#include <ctype.h>
 
 // number of items in an array
 template<typename T, size_t N> size_t ArraySize(T (&)[N]) {
@@ -27,7 +28,7 @@ std::string encodeMorseCharacter(const char& character) {
 		MorseMap thisItem;
 		PROGMEM_readAnything(&map_table[i], thisItem);
 
-		if (character == thisItem.token) {
+		if (toupper(character) == thisItem.token) {
 			result = thisItem.morse;
 			break;
 		}
