@@ -21,9 +21,9 @@ const int morsePin = 2;
 const int correctPin = 3;
 const int buzzerPin = 8;
 const int BUTTON_DELAY = 300;
-const std::string allCities[] = { "COSTA RICA", "SOUTH AFRICA", "AUSTRALIA", "BANGKOK", "DUBAI", "VANCOUVER", "AINSA",
+const std::string allCities[] = {"SOUTH AFRICA", "BANGKOK", "DUBAI", "VANCOUVER", "AINSA",
         "SAN FRANCISCO" };
-const std::string cities[] = { "BANGKOK", "DUBAI" };
+const std::string cities[] = {"DUBAI", "BANGKOK", "VANCOUVER"};
 
 uint8_t cityGuessIndex = 0;
 
@@ -38,7 +38,7 @@ enum ConnectionState {
 };
 
 enum ProgState {
-    INIT, CITIES, DONE
+    INIT, CITIES, DONE, EXIT
 };
 
 enum ErrorState {
@@ -63,10 +63,10 @@ char handleHigh() {
     }
     digitalWrite(buzzerPin, LOW);
     if (cnt > 20) {
-        Serial.println("- pressed");
+//        Serial.println("- pressed");
         return '-';
     } else {
-        Serial.println(". pressed");
+//        Serial.println(". pressed");
         return '.';
     }
 }
@@ -82,7 +82,7 @@ void playMorseChar(const std::string morseChar) {
             buzzer.singleTone(3300, 100);
         }
         lcdPrint(1, displaySequence);
-        delay(400);
+        delay(300);
     }
 }
 
@@ -134,7 +134,6 @@ void setup() {
     buzzer.attach(buzzerPin);
     pinMode(morsePin, INPUT);
     pinMode(correctPin, INPUT);
-
     Serial.begin(9600);
     lcd.init();
     buzzer.singleTone(2000, 200);
@@ -167,17 +166,22 @@ const char* getStateString() {
 
 bool checkState() {
     if (errorState != ErrorState::OK) {
-        playMorseString("Fout!");
+        playMorseString(getMessage(MessageCmd::MSG_WRONG_CITY));
         delay(5000);
         errorState = ErrorState::OK;
         // Serial.println("Error state");
         return true;
     }
 
+    if (progState == ProgState::EXIT) {
+        // do nothing
+        return false;
+    }
     if (progState == ProgState::DONE) {
         playMorseString(getMessage(MessageCmd::MSG_DONE));
         delay(3000);
-        playMorseString("2367");
+        playMorseString(getMessage(MessageCmd::MSG_CODE));
+        progState = ProgState::EXIT;
         return false;
     }
 
@@ -209,7 +213,7 @@ void loop() {
             answeringStarted = true;
             idleCnt = 0;
             morseSequence += handleHigh();
-            Serial.println((String) "MorseSequence: " + morseSequence.c_str());
+//            Serial.println((String) "MorseSequence: " + morseSequence.c_str());
             delay(BUTTON_DELAY);
             //lcdPrint(1, morseSequence.c_str());
         } else if (digitalRead(correctPin) == HIGH) {
@@ -218,20 +222,20 @@ void loop() {
         } else {
             // no button touched, we are in idle time
             idleCnt++;
-            if (idleCnt > 80) {
+            if (idleCnt > 60) {
                 // check whether there is something to decode, reset the counter in either way
                 idleCnt = 0;
                 if (morseSequence.length() > 0) {
                     std::string character = decodeMorseCharacter(morseSequence);
 
                     if (character.length() > 0) {
-                        Serial.println((String) "Character found: " + character.c_str());
+ //                       Serial.println((String) "Character found: " + character.c_str());
                         morseSequence.clear();
                         cityName += character;
-                        Serial.println((String) "City name: " + cityName.c_str());
+//                        Serial.println((String) "City name: " + cityName.c_str());
 
                         if (isInCities(cityName)) {
-                            Serial.println((String) "City found: " + cityName.c_str());
+//                            Serial.println((String) "City found: " + cityName.c_str());
                             if (checkCorrectCity(cityName)) {
                                 if (cityGuessIndex++ >= (ArraySize(cities) - 1)) {
                                     progState = ProgState::DONE;

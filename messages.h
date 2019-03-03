@@ -24,18 +24,20 @@ enum MessageCmd {
   MSG_INCORRECT_MORSE,
   MSG_INCORRECT_CITY,
   MSG_WRONG_CITY,
-  MSG_DONE
+  MSG_DONE,
+  MSG_CODE
 };
 
 const MsgCode messages[] PROGMEM = {
   { MSG_INIT, "Initialiseren" } ,
-  { MSG_FIRST_CITY, "1ste stad?"} ,
-  { MSG_SECOND_CITY, "2de stad?"},
-  { MSG_THIRD_CITY, "3de stad?"},
+  { MSG_FIRST_CITY, "Wat is de eerste stad?"} ,
+  { MSG_SECOND_CITY, "Wat is de tweede stad?"},
+  { MSG_THIRD_CITY, "Wat is de derde stad?"},
   { MSG_INCORRECT_MORSE, "Morse fout!"},
   { MSG_INCORRECT_CITY, "Onbekende stad!"},
-  { MSG_WRONG_CITY, "Verkeerde stad!"},
-  { MSG_DONE, "OK, De code is:"}
+  { MSG_WRONG_CITY, "Fout!"},
+  { MSG_DONE, "Goed! de code,"},
+  { MSG_CODE, "Staat op de klok"}
 };
 
 #define FIRST_COMMAND 0

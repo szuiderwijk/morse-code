@@ -21,6 +21,7 @@ public:
 	LcdDisplay(const LiquidCrystal_I2C& lcd);
 	virtual ~LcdDisplay();
 	void println(const uint8_t row, const std::string msg);
+//	void printScrolling(const uint8_t row, const std::string msg);
 	void init();
 };
 
